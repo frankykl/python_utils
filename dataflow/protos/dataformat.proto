@@ -1,0 +1,32 @@
+// Copyright 2017, DeepPhoton Inc
+// All rights reserved
+
+syntax = "proto3";
+
+enum DataType {
+    DATA_RAW            = 0;                    // Raw pixel format. (See Opencv Mat)
+    DATA_COMPRESSED     = 1;                    // See MIME string for details
+}
+
+// Reference cv::Mat
+message DataFormat {
+    DataType            dataType = 1; 
+    string              mimeType = 2;          // optional MIME type string (e.g. video/mp4)
+    string              pixelFormat = 3;       // Raw data pixel format following opencv (e.g. CV_8UC3 => 3 channles 8 bit)
+    repeated int32      dimSize = 4;           // size of each dimension for arbitrary number of dimensions  (Shape info in nparray)
+}
+
+// This is not used for now. Save it for future remote connection link setup
+message LinkSwitch {
+    string              stubDeviceGuid = 1;
+}
+
+message DataFrame {
+    string              senderBlkGuid = 1;
+    string              senderPort = 2;
+    string              receiverBlkGuid = 3;
+    string              receiverPort = 4;
+    DataFormat          format = 5;     // Connection information. Server port can reject if mismatch    
+    int64               timestamp = 6;  // Timestamp in seconds since Unix epoch
+    int64               dataptr = 7;
+}
